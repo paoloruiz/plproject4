@@ -116,11 +116,11 @@ case class MathFunction(lhs:Function0[Int]) {
 }
 
 /**
- * The BinaryRelation class is used by the `symbol2BinaryRelation` and
- * `fnOfInt2BinaryRelation` implicits to stand in for Scala symbols and
+ * The Conditional class is used by the `symbol2Conditional` and
+ * `fnOfInt2Conditional` implicits to stand in for Scala symbols and
  * functions of type () => Int, the latter being constructed at run-time.
  */
-case class BinaryRelation(lhs:Function0[Int]) {
+case class Conditional(lhs:Function0[Int]) {
   def ===(rhs:Int):Function0[Boolean] = (() => lhs()  == rhs)
   def <=(rhs:Int):Function0[Boolean] = (() => lhs() <= rhs)
   def <=(rhs:Symbol):Function0[Boolean] = (() => lhs() <= binds.num(rhs))
@@ -281,8 +281,8 @@ private def gotoLine(line: Int) {
 implicit def int2LineBuilder(i: Int) = LineBuilder(i)
 implicit def toAppendr(key:Any) = Appendr(key)
 implicit def symbol2Assignment(sym:Symbol) = Assignment(sym)
-implicit def symbol2BinaryRelation(sym:Symbol) = BinaryRelation(() => binds.num(sym))
-implicit def fnOfInt2BinaryRelation(fn:Function0[Int]) = BinaryRelation(fn)
+implicit def symbol2Conditional(sym:Symbol) = Conditional(() => binds.num(sym))
+implicit def fnOfInt2Conditional(fn:Function0[Int]) = Conditional(fn)
 implicit def symbol2MathFunction(sym:Symbol) = MathFunction(() => binds.num(sym))
 implicit def fnOfInt2MathFunction(fn:Function0[Int]) = MathFunction(fn)
 }
