@@ -23,8 +23,13 @@ object EndlessLoop extends Baysick {
 
 object HelloWorld extends Baysick {
   def main(args:Array[String]) = {
-    10 PRINT "Hello Cleveland!"
-    20 END
+    10 LET ('a := 0)
+    20 LET ('b := 1)
+    30 WHILE 'a <= 5 
+    40 PRINT "Hello Cleveland!"
+    50 LET ('a := 'a + 'b)
+    60 ENDWHILE 10000
+    70 END
 
     RUN
   }

@@ -55,6 +55,8 @@ package fogus.baysick {
     case class Input(num: Int, name: Symbol) extends BasicLine
     case class Let(num:Int, fn:Function0[Unit]) extends BasicLine
     case class If(num:Int, fn:Function0[Boolean], thenJmp:Int) extends BasicLine
+    case class While(num:Int, fn:Function0[Boolean]) extends BasicLine
+    case class EndWhile(num:Int, to:Int) extends BasicLine 
     case class End(num: Int) extends BasicLine
 
     /**
@@ -151,6 +153,10 @@ package fogus.baysick {
       def THEN(loc:Int) = lines(num) = If(num, fn, loc)
     }
 
+    case class WhileLoop(num:Int, fn:Function0[Boolean]) {
+      lines(num) = While(num, fn)
+    }
+
     def stringify(x:Any*):String = x.mkString("")
 
     /**
@@ -191,7 +197,7 @@ package fogus.baysick {
     def ABS(i:Int):Function0[Int] = (() => Math.abs(i))
     def ABS(s:Symbol):Function0[Int] = (() => Math.abs(binds.num(s)))
 
-    def RUN() = gotoLine(lines.keys.toList.sort((l,r) => l < r).first)
+    def RUN() = gotoLine(lines.keys.toList.sortWith((l,r) => l < r).head)
 
     /**
      * LineBuilder is the jump off point for the line number syntax of
@@ -205,7 +211,6 @@ package fogus.baysick {
      */
     case class LineBuilder(num: Int) {
       def END() = lines(num) = End(num)
-
       object PRINT {
         def apply(str:String) = lines(num) = PrintString(num, str)
         def apply(number: BigInt) = lines(num) = PrintNumber(num, number)
@@ -228,8 +233,58 @@ package fogus.baysick {
       object IF {
         def apply(fn:Function0[Boolean]) = Branch(num, fn)
       }
-    }
 
+      object WHILE {
+        def apply(fn:Function0[Boolean]) = WhileLoop(num, fn)
+      }
+     
+      object ENDWHILE {
+        def apply(to:Int) = lines(num) = EndWhile(num, to)
+      }
+    }
+    
+
+    private def whileLoopDone(line: Int, stackSize: Int) {
+      var modifier: Int = 0
+      lines(line) match {
+        case While(_, fn:Function0[Boolean]) => {
+          whileLoopDone(line + 10, stackSize + 1)
+          return
+        }
+        case EndWhile(_, to: Int) => {
+          if (stackSize == 0) {
+            gotoLine(line + 10)
+            return
+          } else {
+            modifier = -1
+          }
+        }
+        case _ => {
+          whileLoopDone(line + 10, stackSize + modifier) 
+        }
+      }
+    }
+    
+    private def whileLoopStart(line: Int, stackSize: Int) {
+      var modifier: Int = 0
+      lines(line) match {
+        case EndWhile(_, to: Int) => {
+          whileLoopStart(line - 10, stackSize + 1)
+          return
+        }
+        case While(_, fn:Function0[Boolean]) => {
+          if (stackSize == 0) {
+            gotoLine(line)
+            return
+          } else {
+            modifier = -1
+          }
+        }
+        case _ => {
+          whileLoopStart(line - 10, stackSize + modifier)
+        }
+      }
+    }
     /**
      * This is the runtime evaluator of the built Scala classes from the
      * original BASIC forms.  Currently, lines can only be incremented by
@@ -277,6 +332,17 @@ package fogus.baysick {
           else {
             gotoLine(line + 10)
           }
+        }
+        case While(_, fn:Function0[Boolean]) => {
+          if(fn()) {
+            gotoLine(line + 10)
+          }
+          else {
+            whileLoopDone(line + 10, 0)
+          }
+        }
+        case EndWhile(_, to: Int) => {
+          whileLoopStart(line - 10, 0)
         }
         case Goto(_, to) => gotoLine(to)
         case End(_) => {
