@@ -1,10 +1,3 @@
-/**
-    #######        ##      ##    ##    ######     ####     ######     ##   ##
-    ##    ##      ####      ##  ##    ##           ##     ##    ##    ##  ##
-    #######      ##  ##       ##       ######      ##     ##          ####
-    ##    ##    ########      ##            ##     ##     ##    ##    ##  ##
-    #######    ##      ##     ##       ######     ####     ######     ##   ##
- */
 package fogus.baysick {
   import scala.collection.mutable.HashMap
   import scala.collection.mutable.Stack
