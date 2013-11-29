@@ -7,3 +7,4 @@ java -cp $SCALA_HOME/lib/scala-library.jar:baysick.jar HelloPrint
 java -cp $SCALA_HOME/lib/scala-library.jar:baysick.jar HelloLet
 java -cp $SCALA_HOME/lib/scala-library.jar:baysick.jar HelloIf
 java -cp $SCALA_HOME/lib/scala-library.jar:baysick.jar SquareRoot
+java -cp $SCALA_HOME/lib/scala-library.jar:baysick.jar ListTest

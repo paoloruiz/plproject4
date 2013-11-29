@@ -21,6 +21,17 @@ object EndlessLoop extends Baysick {
   }
 }
 
+object ListTest extends Baysick {
+  def main(args:Array[String]) = {
+    10 PRINT "List test"
+    20 LIST ('a := List(0, 1, 2))
+    30 PRINT "List test2"
+    40 END
+
+    RUN
+  }
+}
+
 object HelloWorld extends Baysick {
   def main(args:Array[String]) = {
     10 LET ('a := 0)
