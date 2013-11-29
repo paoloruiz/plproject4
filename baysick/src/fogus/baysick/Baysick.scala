@@ -54,6 +54,7 @@ package fogus.baysick {
     case class Goto(num: Int, to: Int) extends BasicLine
     case class Input(num: Int, name: Symbol) extends BasicLine
     case class Let(num:Int, fn:Function0[Unit]) extends BasicLine
+    case class ListAssig(num:Int, fn:Function0[Unit]) extends BasicLine
     case class If(num:Int, fn:Function0[Boolean], thenJmp:Int) extends BasicLine
     case class While(num:Int, fn:Function0[Boolean]) extends BasicLine
     case class EndWhile(num:Int, to:Int) extends BasicLine 
@@ -67,6 +68,7 @@ package fogus.baysick {
     class Bindings[T,U] {
       val atoms = HashMap[Symbol, T]()
       val numerics = HashMap[Symbol, U]()
+      val lists = HashMap[Symbol, List[Int]]()
 
       /**
        * set uses a little hack to allow the storage of either one type or
@@ -75,9 +77,11 @@ package fogus.baysick {
       def set[X >: T with U](k:Symbol, v:X) = v match {
         case u:U => numerics(k) = u
         case t:T => atoms(k) = t
+        case i:List[Int] => lists(k) = i
       }
       def atom(k:Symbol):T = atoms(k)
       def num(k:Symbol):U = numerics(k)
+      def list(k:Symbol):List[Int] = lists(k)
 
       /**
        * Technically, you can have two variables with the same name with
@@ -92,10 +96,15 @@ package fogus.baysick {
           case (Some(x), Some(y)) => Some(x,y)
         }
       }
+
+      def contains(k:Symbol):Boolean = {
+        return atoms.contains(k) || numerics.contains(k)
+      }
     }
 
     val lines = new HashMap[Int, BasicLine]
     val binds = new Bindings[String, Int]
+    val listBinds = new Bindings[String, List[Int]]
     val returnStack = new Stack[Int]
 
     /**
@@ -106,6 +115,7 @@ package fogus.baysick {
     case class Assignment(sym:Symbol) {
       def :=(v:String):Function0[Unit] = (() => binds.set(sym, v))
       def :=(v:Int):Function0[Unit] = (() => binds.set(sym, v))
+      def :=(v:List[Int]):Function0[Unit] = (() => listBinds.set(sym, v))
       def :=(v:Function0[Int]):Function0[Unit] = (() => binds.set(sym, v()))
     }
 
@@ -171,7 +181,10 @@ package fogus.baysick {
        *
        */
       var appendage = lhs match {
-        case sym:Symbol => (() => binds.any(sym).toString)
+        case sym:Symbol => (() => {
+            if (binds.contains(sym)) binds.any(sym).toString
+            else listBinds.any(sym).toString
+          })
         case fn:Function0[Any] => fn
         case _ => (() => lhs.toString)
       }
@@ -182,7 +195,10 @@ package fogus.baysick {
          * concatenate it to the result of the appendage function.
          */
         (() => rhs match {
-          case sym:Symbol => stringify(appendage(), binds.any(sym))
+          case sym:Symbol => {
+            if (binds.contains(sym)) stringify(appendage(), binds.any(sym))
+            else stringify(appendage(), listBinds.any(sym))
+          }
           case fn:Function0[Any] => stringify(appendage(), fn())
           case _ => stringify(appendage(), rhs)
         })
@@ -240,6 +256,10 @@ package fogus.baysick {
      
       object ENDWHILE {
         def apply(to:Int) = lines(num) = EndWhile(num, to)
+      }
+
+      object LIST {
+        def apply(fn:Function0[Unit]) = lines(num) = ListAssig(num, fn)
       }
     }
     
@@ -322,6 +342,10 @@ package fogus.baysick {
           gotoLine(line + 10)
         }
         case Let(_, fn:Function0[Unit]) => {
+          fn()
+          gotoLine(line + 10)
+        }
+        case ListAssig(_, fn:Function0[Unit]) => {
           fn()
           gotoLine(line + 10)
         }
