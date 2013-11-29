@@ -21,12 +21,24 @@ object EndlessLoop extends Baysick {
   }
 }
 
+object RangeTest extends Baysick {
+  def main(args:Array[String]) = {
+    10 PRINT "Range Test"
+    20 LIST ('a := RANGE(0, 3))
+    30 PRINT 'a
+    40 END
+    
+    RUN
+  }
+}
+
 object ListTest extends Baysick {
   def main(args:Array[String]) = {
     10 PRINT "List test"
     20 LIST ('a := List(0, 1, 2))
-    30 PRINT "List test2"
-    40 END
+    30 PRINT 'a
+    40 PRINT "List test2"
+    50 END
 
     RUN
   }

@@ -89,22 +89,25 @@ package fogus.baysick {
        * not come into play.
        */
       def any(k:Symbol):Any = {
-        (atoms.get(k), numerics.get(k)) match {
-          case (Some(x), None) => x
-          case (None, Some(y)) => y
-          case (None, None) => None
-          case (Some(x), Some(y)) => Some(x,y)
+        (atoms.get(k), numerics.get(k), lists.get(k)) match {
+          case (Some(x), None, None) => x
+          case (None, Some(y), None) => y
+          case (None, None, Some(z)) => z
+          case (None, None, None) => None
+          case (Some(x), Some(y), None) => Some(x,y)
+          case (Some(x), None, Some(z)) => Some(x,z)
+          case (None, Some(y), Some(z)) => Some(y,z)
+          case (Some(x), Some(y), Some(z)) => Some(x,y,z)
         }
       }
 
       def contains(k:Symbol):Boolean = {
-        return atoms.contains(k) || numerics.contains(k)
+        return atoms.contains(k) || numerics.contains(k) || lists.contains(k)
       }
     }
 
     val lines = new HashMap[Int, BasicLine]
     val binds = new Bindings[String, Int]
-    val listBinds = new Bindings[String, List[Int]]
     val returnStack = new Stack[Int]
 
     /**
@@ -115,8 +118,9 @@ package fogus.baysick {
     case class Assignment(sym:Symbol) {
       def :=(v:String):Function0[Unit] = (() => binds.set(sym, v))
       def :=(v:Int):Function0[Unit] = (() => binds.set(sym, v))
-      def :=(v:List[Int]):Function0[Unit] = (() => listBinds.set(sym, v))
+      def :=(v:List[Int]):Function0[Unit] = (() => binds.set(sym, v))
       def :=(v:Function0[Int]):Function0[Unit] = (() => binds.set(sym, v()))
+      def :=[X: ClassManifest](v:Function0[List[Int]]):Function0[Unit] = (() => binds.set(sym, v()))
     }
 
     /**
@@ -181,10 +185,7 @@ package fogus.baysick {
        *
        */
       var appendage = lhs match {
-        case sym:Symbol => (() => {
-            if (binds.contains(sym)) binds.any(sym).toString
-            else listBinds.any(sym).toString
-          })
+        case sym:Symbol => (() => binds.any(sym).toString)
         case fn:Function0[Any] => fn
         case _ => (() => lhs.toString)
       }
@@ -195,10 +196,7 @@ package fogus.baysick {
          * concatenate it to the result of the appendage function.
          */
         (() => rhs match {
-          case sym:Symbol => {
-            if (binds.contains(sym)) stringify(appendage(), binds.any(sym))
-            else stringify(appendage(), listBinds.any(sym))
-          }
+          case sym:Symbol => stringify(appendage(), binds.any(sym))
           case fn:Function0[Any] => stringify(appendage(), fn())
           case _ => stringify(appendage(), rhs)
         })
@@ -213,6 +211,14 @@ package fogus.baysick {
     def ABS(i:Int):Function0[Int] = (() => Math.abs(i))
     def ABS(s:Symbol):Function0[Int] = (() => Math.abs(binds.num(s)))
 
+    /**
+     * List Functions
+     */
+    def RANGE(s:Int,e:Int):Function0[List[Int]] = (() => List.range(s.intValue, e.intValue))
+    def RANGE(s:Symbol,e:Int):Function0[List[Int]] = (() => List.range(binds.num(s).intValue, e.intValue))
+    def RANGE(s:Int,e:Symbol):Function0[List[Int]] = (() => List.range(s.intValue, binds.num(e).intValue))
+    def RANGE(s:Symbol,e:Symbol):Function0[List[Int]] = (() => List.range(binds.num(s).intValue, binds.num(e).intValue))
+    
     def RUN() = gotoLine(lines.keys.toList.sortWith((l,r) => l < r).head)
 
     /**
