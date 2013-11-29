@@ -47,6 +47,7 @@ package fogus.baysick {
     case class Goto(num: Int, to: Int) extends BasicLine
     case class Input(num: Int, name: Symbol) extends BasicLine
     case class Let(num:Int, fn:Function0[Unit]) extends BasicLine
+    case class ListAssig(num:Int, fn:Function0[Unit]) extends BasicLine
     case class If(num:Int, fn:Function0[Boolean], thenJmp:Int) extends BasicLine
     case class While(num:Int, fn:Function0[Boolean]) extends BasicLine
     case class EndWhile(num:Int, to:Int) extends BasicLine 
@@ -60,6 +61,7 @@ package fogus.baysick {
     class Bindings[T,U] {
       val atoms = HashMap[Symbol, T]()
       val numerics = HashMap[Symbol, U]()
+      val lists = HashMap[Symbol, List[Int]]()
 
       /**
        * set uses a little hack to allow the storage of either one type or
@@ -68,9 +70,11 @@ package fogus.baysick {
       def set[X >: T with U](k:Symbol, v:X) = v match {
         case u:U => numerics(k) = u
         case t:T => atoms(k) = t
+        case i:List[Int] => lists(k) = i
       }
       def atom(k:Symbol):T = atoms(k)
       def num(k:Symbol):U = numerics(k)
+      def list(k:Symbol):List[Int] = lists(k)
 
       /**
        * Technically, you can have two variables with the same name with
@@ -78,12 +82,20 @@ package fogus.baysick {
        * not come into play.
        */
       def any(k:Symbol):Any = {
-        (atoms.get(k), numerics.get(k)) match {
-          case (Some(x), None) => x
-          case (None, Some(y)) => y
-          case (None, None) => None
-          case (Some(x), Some(y)) => Some(x,y)
+        (atoms.get(k), numerics.get(k), lists.get(k)) match {
+          case (Some(x), None, None) => x
+          case (None, Some(y), None) => y
+          case (None, None, Some(z)) => z
+          case (None, None, None) => None
+          case (Some(x), Some(y), None) => Some(x,y)
+          case (Some(x), None, Some(z)) => Some(x,z)
+          case (None, Some(y), Some(z)) => Some(y,z)
+          case (Some(x), Some(y), Some(z)) => Some(x,y,z)
         }
+      }
+
+      def contains(k:Symbol):Boolean = {
+        return atoms.contains(k) || numerics.contains(k) || lists.contains(k)
       }
     }
 
@@ -99,7 +111,9 @@ package fogus.baysick {
     case class Assignment(sym:Symbol) {
       def :=(v:String):Function0[Unit] = (() => binds.set(sym, v))
       def :=(v:Int):Function0[Unit] = (() => binds.set(sym, v))
+      def :=(v:List[Int]):Function0[Unit] = (() => binds.set(sym, v))
       def :=(v:Function0[Int]):Function0[Unit] = (() => binds.set(sym, v()))
+      def :=[X: ClassManifest](v:Function0[List[Int]]):Function0[Unit] = (() => binds.set(sym, v()))
     }
 
     /**
@@ -190,6 +204,14 @@ package fogus.baysick {
     def ABS(i:Int):Function0[Int] = (() => Math.abs(i))
     def ABS(s:Symbol):Function0[Int] = (() => Math.abs(binds.num(s)))
 
+    /**
+     * List Functions
+     */
+    def RANGE(s:Int,e:Int):Function0[List[Int]] = (() => List.range(s.intValue, e.intValue))
+    def RANGE(s:Symbol,e:Int):Function0[List[Int]] = (() => List.range(binds.num(s).intValue, e.intValue))
+    def RANGE(s:Int,e:Symbol):Function0[List[Int]] = (() => List.range(s.intValue, binds.num(e).intValue))
+    def RANGE(s:Symbol,e:Symbol):Function0[List[Int]] = (() => List.range(binds.num(s).intValue, binds.num(e).intValue))
+    
     def RUN() = gotoLine(lines.keys.toList.sortWith((l,r) => l < r).head)
 
     /**
@@ -234,11 +256,14 @@ package fogus.baysick {
       object ENDWHILE {
         def apply(to:Int) = lines(num) = EndWhile(num, to)
       }
+
+      object LIST {
+        def apply(fn:Function0[Unit]) = lines(num) = ListAssig(num, fn)
+      }
     }
     
 
     private def whileLoopDone(line: Int, stackSize: Int) {
-      var modifier: Int = 0
       lines(line) match {
         case While(_, fn:Function0[Boolean]) => {
           whileLoopDone(line + 10, stackSize + 1)
@@ -249,17 +274,16 @@ package fogus.baysick {
             gotoLine(line + 10)
             return
           } else {
-            modifier = -1
+            whileLoopDone(line + 10, stackSize -1)
           }
         }
         case _ => {
-          whileLoopDone(line + 10, stackSize + modifier) 
+          whileLoopDone(line + 10, stackSize) 
         }
       }
     }
     
     private def whileLoopStart(line: Int, stackSize: Int) {
-      var modifier: Int = 0
       lines(line) match {
         case EndWhile(_, to: Int) => {
           whileLoopStart(line - 10, stackSize + 1)
@@ -270,11 +294,11 @@ package fogus.baysick {
             gotoLine(line)
             return
           } else {
-            modifier = -1
+            whileLoopStart(line - 10, stackSize - 1)
           }
         }
         case _ => {
-          whileLoopStart(line - 10, stackSize + modifier)
+          whileLoopStart(line - 10, stackSize)
         }
       }
     }
@@ -315,6 +339,10 @@ package fogus.baysick {
           gotoLine(line + 10)
         }
         case Let(_, fn:Function0[Unit]) => {
+          fn()
+          gotoLine(line + 10)
+        }
+        case ListAssig(_, fn:Function0[Unit]) => {
           fn()
           gotoLine(line + 10)
         }
