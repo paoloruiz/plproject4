@@ -27,9 +27,14 @@ object HelloWorld extends Baysick {
     20 LET ('b := 1)
     30 WHILE 'a <= 5 
     40 PRINT "Hello Cleveland!"
-    50 LET ('a := 'a + 'b)
-    60 ENDWHILE 10000
-    70 END
+    50 LET ('c := 0)
+    60 WHILE 'c <= 2
+    70 PRINT "Hello Austin"
+    80 LET ('c := 'c + 'b)
+    90 ENDWHILE 10000
+    100 LET ('a := 'a + 'b)
+    110 ENDWHILE 10000
+    120 END
 
     RUN
   }

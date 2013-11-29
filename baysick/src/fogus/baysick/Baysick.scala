@@ -245,7 +245,6 @@ package fogus.baysick {
     
 
     private def whileLoopDone(line: Int, stackSize: Int) {
-      var modifier: Int = 0
       lines(line) match {
         case While(_, fn:Function0[Boolean]) => {
           whileLoopDone(line + 10, stackSize + 1)
@@ -256,17 +255,16 @@ package fogus.baysick {
             gotoLine(line + 10)
             return
           } else {
-            modifier = -1
+            whileLoopDone(line + 10, stackSize -1)
           }
         }
         case _ => {
-          whileLoopDone(line + 10, stackSize + modifier) 
+          whileLoopDone(line + 10, stackSize) 
         }
       }
     }
     
     private def whileLoopStart(line: Int, stackSize: Int) {
-      var modifier: Int = 0
       lines(line) match {
         case EndWhile(_, to: Int) => {
           whileLoopStart(line - 10, stackSize + 1)
@@ -277,11 +275,11 @@ package fogus.baysick {
             gotoLine(line)
             return
           } else {
-            modifier = -1
+            whileLoopStart(line - 10, stackSize - 1)
           }
         }
         case _ => {
-          whileLoopStart(line - 10, stackSize + modifier)
+          whileLoopStart(line - 10, stackSize)
         }
       }
     }
