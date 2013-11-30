@@ -47,8 +47,8 @@ package fogus.baysick {
     case class Goto(num: Int, to: Int) extends BasicLine
     case class Input(num: Int, name: Symbol) extends BasicLine
     case class Let(num:Int, fn:Function0[Unit]) extends BasicLine
-    case class LetInt(num:Int, fn:Function0[Int]) extends BasicLine
-    case class LetString(num:Int, fn:Function0[String]) extends BasicLine
+    case class LetInt(num:Int, fn:Function0[Unit]) extends BasicLine
+    case class LetString(num:Int, fn:Function0[Unit]) extends BasicLine
     case class ListAssig(num:Int, fn:Function0[Unit]) extends BasicLine
     case class If(num:Int, fn:Function0[Boolean], thenJmp:Int) extends BasicLine
     case class While(num:Int, fn:Function0[Boolean]) extends BasicLine
@@ -245,14 +245,13 @@ package fogus.baysick {
       }
 
       object INT {
-        def apply(fn:Function0[Int]) = lines(num) = LetInt(num, fn)
+        def apply(fn:Function0[Unit]) = lines(num) = LetInt(num, fn)
       }
 
       object STRING {
-        def apply(fn:Function0[String]) = lines(num) = LetString(num, fn)
+        def apply(fn:Function0[Unit]) = lines(num) = LetString(num, fn)
       }
 
-      object GOTO {
       object GOTO {
         def apply(to: Int) = lines(num) = Goto(num, to)
       }
@@ -354,7 +353,7 @@ package fogus.baysick {
           fn()
           gotoLine(line + 10)
         }
-        case LetString(_, fn:Function0[Int]) => {
+        case LetString(_, fn:Function0[String]) => {
           fn()
           gotoLine(line + 10)
         }
