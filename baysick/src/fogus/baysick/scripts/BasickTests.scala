@@ -46,11 +46,11 @@ object ListTest extends Baysick {
 
 object HelloWorld extends Baysick {
   def main(args:Array[String]) = {
-    10 LET ('a := 0)
-    20 LET ('b := 1)
+    10 INT ('a := 0)
+    20 INT ('b := 1)
     30 WHILE 'a <= 5 
     40 PRINT "Hello Cleveland!"
-    50 LET ('c := 0)
+    50 INT ('c := 0)
     60 WHILE 'c <= 2
     70 PRINT "Hello Austin"
     80 LET ('c := 'c + 'b)
@@ -98,10 +98,10 @@ object HelloName extends Baysick {
 
 object HelloPrint extends Baysick {
   def main(args:Array[String]) = {
-    10 LET ('a := "World")
+    10 STRING ('a := "World")
     20 PRINT "Hello " % 'a
     30 PRINT 'a % " World"
-    40 LET ('a := 42)
+    40 INT ('a := 42)
     50 PRINT "Hello " % 42
     60 PRINT "Hello " % 'a
     70 PRINT 42 % " World"
@@ -117,9 +117,9 @@ object HelloPrint extends Baysick {
 
 object HelloLet extends Baysick {
   def main(args:Array[String]) = {
-    10 LET ('a := "Hello Let!")  // weird, LET requires parens
+    10 STRING ('a := "Hello Let!")  // weird, LET requires parens
     20 PRINT 'a
-    30 LET ('a := 42)
+    30 INT ('a := 42)
     40 PRINT 'a
     50 END
 
@@ -129,7 +129,7 @@ object HelloLet extends Baysick {
 
 object HelloIf extends Baysick {
   def main(args:Array[String]) = {
-    10 LET ('a := 5)
+    10 INT ('a := 5)
     20 IF 'a === 5 THEN 40
     30 PRINT "This will never execute"
     40 PRINT "They were equal!"
@@ -156,10 +156,10 @@ object SquareRoot extends Baysick {
 object Lunar extends Baysick {
   def main(args:Array[String]) = {
     10 PRINT "Welcome to Baysick Lunar Lander v0.0.1"
-    20 LET ('dist := 100)
-    30 LET ('v := 1)
-    40 LET ('fuel := 1000)
-    50 LET ('mass := 1000)
+    20 INT ('dist := 100)
+    30 INT ('v := 1)
+    40 INT ('fuel := 1000)
+    50 INT ('mass := 1000)
 
     60 PRINT "You are a in control of a lunar lander."
     70 PRINT "You are drifting towards the surface of the moon."
@@ -171,9 +171,9 @@ object Lunar extends Baysick {
     120 IF ABS('burn) <= 'fuel THEN 150
     130 PRINT "You don't have that much fuel"
     140 GOTO 100
-    150 LET ('v := 'v + 'burn * 10 / ('fuel + 'mass))
-    160 LET ('fuel := 'fuel - ABS('burn))
-    170 LET ('dist := 'dist - 'v)
+    150 INT ('v := 'v + 'burn * 10 / ('fuel + 'mass))
+    160 INT ('fuel := 'fuel - ABS('burn))
+    170 INT ('dist := 'dist - 'v)
     180 IF 'dist > 0 THEN 100
     190 PRINT "You have hit the surface"
     200 IF 'v < 3 THEN 240
