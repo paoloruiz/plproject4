@@ -54,9 +54,11 @@ object HelloWorld extends Baysick {
     60 WHILE 'c <= 2
     70 PRINT "Hello Austin"
     80 LET ('c := 'c + 'b)
-    90 ENDWHILE 10000
+    90 ENDWHILE 
+
     100 LET ('a := 'a + 'b)
-    110 ENDWHILE 10000
+    110 ENDWHILE
+ 
     120 END
 
     RUN
