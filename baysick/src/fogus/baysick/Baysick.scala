@@ -57,7 +57,7 @@ package fogus.baysick {
     case class ListAssig(num:Int, fn:Function0[Unit]) extends BasicLine
     case class If(num:Int, fn:Function0[Boolean], thenJmp:Int) extends BasicLine
     case class While(num:Int, fn:Function0[Boolean]) extends BasicLine
-    case class EndWhile(num:Int, to:Int) extends BasicLine 
+    case class EndWhile(num: Int) extends BasicLine 
     case class End(num: Int) extends BasicLine
 
     /**
@@ -232,6 +232,7 @@ package fogus.baysick {
      * be handled here and as separate functions as SQRT.
      */
     case class LineBuilder(num: Int) {
+      def ENDWHILE() = lines(num) = EndWhile(num)
       def END() = lines(num) = End(num)
       object PRINT {
         def apply(str:String) = lines(num) = PrintString(num, str)
@@ -260,10 +261,6 @@ package fogus.baysick {
         def apply(fn:Function0[Boolean]) = WhileLoop(num, fn)
       }
      
-      object ENDWHILE {
-        def apply(to:Int) = lines(num) = EndWhile(num, to)
-      }
-
       object LIST {
         def apply(fn:Function0[Unit]) = lines(num) = ListAssig(num, fn)
       }
@@ -276,7 +273,7 @@ package fogus.baysick {
           whileLoopDone(line + 10, stackSize + 1)
           return
         }
-        case EndWhile(_, to: Int) => {
+        case EndWhile(_) => {
           if (stackSize == 0) {
             gotoLine(line + 10)
             return
@@ -292,7 +289,7 @@ package fogus.baysick {
     
     private def whileLoopStart(line: Int, stackSize: Int) {
       lines(line) match {
-        case EndWhile(_, to: Int) => {
+        case EndWhile(_) => {
           whileLoopStart(line - 10, stackSize + 1)
           return
         }
@@ -369,7 +366,7 @@ package fogus.baysick {
             whileLoopDone(line + 10, 0)
           }
         }
-        case EndWhile(_, to: Int) => {
+        case EndWhile(_) => {
           whileLoopStart(line - 10, 0)
         }
         case Goto(_, to) => gotoLine(to)
