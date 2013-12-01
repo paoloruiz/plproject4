@@ -49,6 +49,7 @@ package fogus.baysick {
     case class Let(num:Int, fn:Function0[Unit]) extends BasicLine
     case class LetInt(num:Int, fn:Function0[Int]) extends BasicLine
     case class LetString(num:Int, fn:Function0[String]) extends BasicLine
+    case class LetFloat(num:Int, fn:Function0[Float]) extends BasicLine
     case class ListAssig(num:Int, fn:Function0[Unit]) extends BasicLine
     case class If(num:Int, fn:Function0[Boolean], thenJmp:Int) extends BasicLine
     case class While(num:Int, fn:Function0[Boolean]) extends BasicLine
@@ -252,7 +253,10 @@ package fogus.baysick {
         def apply(fn:Function0[String]) = lines(num) = LetString(num, fn)
       }
 
-      object GOTO {
+      object FLOAT {
+        def apply(fn:Function0[Float]) = lines(num) = LetFloat(num, fn)
+      }
+
       object GOTO {
         def apply(to: Int) = lines(num) = Goto(num, to)
       }
@@ -354,7 +358,11 @@ package fogus.baysick {
           fn()
           gotoLine(line + 10)
         }
-        case LetString(_, fn:Function0[Int]) => {
+        case LetString(_, fn:Function0[String]) => {
+          fn()
+          gotoLine(line + 10)
+        }
+        case LetFloat(_, fn:Function0[Float]) => {
           fn()
           gotoLine(line + 10)
         }
