@@ -11,6 +11,16 @@ import fogus.baysick.Baysick
  * </code>
  *
  **/
+object FloatTest extends Baysick {
+  def main(args:Array[String]) = {
+    10 FLOAT ('a := 1.253567f)
+    20 PRINT 'a
+    30 END
+
+    RUN
+  }
+}
+
 object EndlessLoop extends Baysick {
   def main(args:Array[String]) = {
     10 PRINT "Fogus Rulez!"
