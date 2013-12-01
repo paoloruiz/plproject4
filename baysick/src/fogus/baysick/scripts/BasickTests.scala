@@ -32,6 +32,25 @@ object RangeTest extends Baysick {
   }
 }
 
+object LoopTest extends Baysick {
+  def main(args:Array[String]) = {
+    10 PRINT "Loop Test"
+    20 LIST ('a := RANGE(0, 3))
+    30 PRINT 'a
+    40 FOR 'm IN 'a
+    50 PRINT 'm
+    60 ENDFOR 
+
+    70 FOR 'n IN RANGE(18,19)
+    80 PRINT 'n
+    90 ENDFOR 
+
+    100 END
+    
+    RUN
+  }
+}
+
 object ListTest extends Baysick {
   def main(args:Array[String]) = {
     10 PRINT "List test"

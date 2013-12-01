@@ -54,6 +54,8 @@ package fogus.baysick {
     case class If(num:Int, fn:Function0[Boolean], thenJmp:Int) extends BasicLine
     case class While(num:Int, fn:Function0[Boolean]) extends BasicLine
     case class EndWhile(num: Int) extends BasicLine 
+    case class For(num: Int, v: Symbol, lis:List[Int]) extends BasicLine
+    case class EndFor(num: Int) extends BasicLine 
     case class End(num: Int) extends BasicLine
 
     /**
@@ -163,6 +165,11 @@ package fogus.baysick {
       def THEN(loc:Int) = lines(num) = If(num, fn, loc)
     }
 
+    case class ForLoop(num:Int, v:Symbol) {
+      def IN(lis:Symbol) = lines(num) = For(num, v, castList(binds.any(lis)))
+      def IN(lis:Function0[List[Int]]) = lines(num) = For(num, v, lis())
+    }
+
     case class WhileLoop(num:Int, fn:Function0[Boolean]) {
       lines(num) = While(num, fn)
     }
@@ -229,6 +236,7 @@ package fogus.baysick {
      */
     case class LineBuilder(num: Int) {
       def ENDWHILE() = lines(num) = EndWhile(num)
+      def ENDFOR() = lines(num) = EndFor(num)
       def END() = lines(num) = End(num)
       object PRINT {
         def apply(str:String) = lines(num) = PrintString(num, str)
@@ -246,11 +254,11 @@ package fogus.baysick {
       }
 
       object INT {
-        def apply(fn:Function0[Int]) = lines(num) = LetInt(num, fn)
+        def apply(fn:Function0[Unit]) = lines(num) = LetInt(num, fn)
       }
 
       object STRING {
-        def apply(fn:Function0[String]) = lines(num) = LetString(num, fn)
+        def apply(fn:Function0[Unit]) = lines(num) = LetString(num, fn)
       }
 
       object FLOAT {
@@ -268,12 +276,23 @@ package fogus.baysick {
       object WHILE {
         def apply(fn:Function0[Boolean]) = WhileLoop(num, fn)
       }
+
+      object FOR {
+        def apply(v:Symbol) = ForLoop(num, v) 
+      }
      
       object LIST {
         def apply(fn:Function0[Unit]) = lines(num) = ListAssig(num, fn)
       }
     }
     
+    private def castList(g:Any):List[Int] = {
+      println(g)
+      g match {
+        case g2: List[Int] => return g2
+        case _ => return List()
+      }
+    }
 
     private def whileLoopDone(line: Int, stackSize: Int) {
       lines(line) match {
@@ -291,6 +310,26 @@ package fogus.baysick {
         }
         case _ => {
           whileLoopDone(line + 10, stackSize) 
+        }
+      }
+    }
+    
+    private def forLoopDone(line: Int, stackSize: Int) {
+      lines(line) match {
+        case For(_, a:Any, b:Any) => {
+          forLoopDone(line + 10, stackSize + 1)
+          return
+        }
+        case EndFor(_) => {
+          if (stackSize == 0) {
+            gotoLine(line + 10)
+            return
+          } else {
+            forLoopDone(line + 10, stackSize -1)
+          }
+        }
+        case _ => {
+          forLoopDone(line + 10, stackSize) 
         }
       }
     }
@@ -314,6 +353,7 @@ package fogus.baysick {
         }
       }
     }
+
     /**
      * This is the runtime evaluator of the built Scala classes from the
      * original BASIC forms.  Currently, lines can only be incremented by
@@ -388,6 +428,34 @@ package fogus.baysick {
         }
         case EndWhile(_) => {
           whileLoopStart(line - 10, 0)
+        }
+        case For(_, v:Symbol, fn:Function0[List[Int]]) => {
+          val forlist = fn()
+          if (0 >= forlist.length) {
+            forLoopDone(line+10, 0)
+          }
+          else {
+            for (i <- 0 to forlist.length-1) {
+              binds.set(v, forlist(i))
+              gotoLine(line + 10)
+            }
+            forLoopDone(line+10, 0)
+          }
+        }
+        case For(_, v:Symbol, forlist:List[Int]) => {
+          if (0 >= forlist.length) {
+            forLoopDone(line+10, 0)
+          }
+          else {
+            for (i <- 0 to forlist.length-1) {
+              binds.set(v, forlist(i))
+              gotoLine(line + 10)
+            }
+            forLoopDone(line+10, 0)
+          }
+        }
+        case EndFor(_) => {
+          return
         }
         case Goto(_, to) => gotoLine(to)
         case End(_) => {
