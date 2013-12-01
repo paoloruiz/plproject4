@@ -53,7 +53,8 @@ package fogus.baysick {
     case class If(num:Int, fn:Function0[Boolean], thenJmp:Int) extends BasicLine
     case class While(num:Int, fn:Function0[Boolean]) extends BasicLine
     case class EndWhile(num: Int) extends BasicLine 
-    case class For(num: Int, v: Symbol, lis:List[Int]) extends BasicLine
+    case class ForRange(num: Int, v: Symbol, lis:List[Int]) extends BasicLine
+    case class For(num: Int, v: Symbol, sym:Symbol) extends BasicLine
     case class EndFor(num: Int) extends BasicLine 
     case class End(num: Int) extends BasicLine
 
@@ -165,8 +166,8 @@ package fogus.baysick {
     }
 
     case class ForLoop(num:Int, v:Symbol) {
-      def IN(lis:Symbol) = lines(num) = For(num, v, castList(binds.any(lis)))
-      def IN(lis:Function0[List[Int]]) = lines(num) = For(num, v, lis())
+      def IN(lis:Symbol) = lines(num) = For(num, v, lis)
+      def IN(lis:Function0[List[Int]]) = lines(num) = ForRange(num, v, lis())
     }
 
     case class WhileLoop(num:Int, fn:Function0[Boolean]) {
@@ -282,7 +283,6 @@ package fogus.baysick {
     }
     
     private def castList(g:Any):List[Int] = {
-      println(g)
       g match {
         case g2: List[Int] => return g2
         case _ => return List()
@@ -420,8 +420,7 @@ package fogus.baysick {
         case EndWhile(_) => {
           whileLoopStart(line - 10, 0)
         }
-        case For(_, v:Symbol, fn:Function0[List[Int]]) => {
-          val forlist = fn()
+        case ForRange(_, v:Symbol, forlist:List[Int]) => {
           if (0 >= forlist.length) {
             forLoopDone(line+10, 0)
           }
@@ -433,7 +432,8 @@ package fogus.baysick {
             forLoopDone(line+10, 0)
           }
         }
-        case For(_, v:Symbol, forlist:List[Int]) => {
+        case For(_, v:Symbol, sym:Symbol) => {
+          var forlist:List[Int] = castList(binds.any(sym))
           if (0 >= forlist.length) {
             forLoopDone(line+10, 0)
           }

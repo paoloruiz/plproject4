@@ -41,7 +41,7 @@ object LoopTest extends Baysick {
     50 PRINT 'm
     60 ENDFOR 
 
-    70 FOR 'n IN RANGE(18,19)
+    70 FOR 'n IN RANGE(18,20)
     80 PRINT 'n
     90 ENDFOR 
 
