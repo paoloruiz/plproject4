@@ -13,7 +13,7 @@ import fogus.baysick.Baysick
  **/
 object FloatTest extends Baysick {
   def main(args:Array[String]) = {
-    10 FLOAT ('a := 1.253567f)
+    10 FLOAT ('a := 1.253567)
     20 PRINT 'a
     30 END
 

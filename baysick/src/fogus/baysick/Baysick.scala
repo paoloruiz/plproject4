@@ -49,6 +49,7 @@ package fogus.baysick {
     case class Let(num:Int, fn:Function0[Unit]) extends BasicLine
     case class LetInt(num:Int, fn:Function0[Unit]) extends BasicLine
     case class LetString(num:Int, fn:Function0[Unit]) extends BasicLine
+    case class LetDouble(num:Int, fn:Function0[Unit]) extends BasicLine
     case class LetFloat(num:Int, fn:Function0[Unit]) extends BasicLine
     case class ListAssig(num:Int, fn:Function0[Unit]) extends BasicLine
     case class If(num:Int, fn:Function0[Boolean], thenJmp:Int) extends BasicLine
@@ -117,6 +118,7 @@ package fogus.baysick {
     case class Assignment(sym:Symbol) {
       def :=(v:String):Function0[Unit] = (() => binds.set(sym, v))
       def :=(v:Float):Function0[Unit] = (() => binds.set(sym, v))
+      def :=(v:Double):Function0[Unit] = (() => binds.set(sym, v))
       def :=(v:Int):Function0[Unit] = (() => binds.set(sym, v))
       def :=(v:List[Int]):Function0[Unit] = (() => binds.set(sym, v))
       def :=(v:Function0[Int]):Function0[Unit] = (() => binds.set(sym, v()))
@@ -263,6 +265,10 @@ package fogus.baysick {
         def apply(fn:Function0[Unit]) = lines(num) = LetString(num, fn)
       }
 
+      object DOUBLE {
+        def apply(fn:Function0[Unit]) = lines(num) = LetDouble(num, fn)
+      }
+
       object FLOAT {
         def apply(fn:Function0[Unit]) = lines(num) = LetFloat(num, fn)
       }
@@ -400,6 +406,10 @@ package fogus.baysick {
           gotoLine(line + 10)
         }
         case LetString(_, fn:Function0[String]) => {
+          fn()
+          gotoLine(line + 10)
+        }
+        case LetDouble(_, fn:Function0[String]) => {
           fn()
           gotoLine(line + 10)
         }

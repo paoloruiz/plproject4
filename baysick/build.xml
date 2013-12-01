@@ -65,6 +65,12 @@
     </copy>
 
     <chmod file="${dist.home}/test_all.sh" perm="ugo+rx"/>
+
+    <copy todir="${dist.home}" includeEmptyDirs="false" preservelastmodified="yes" overwrite="yes" flatten="false">
+      <fileset dir="${src.home}" includes="test_math.sh"/>
+    </copy>
+
+    <chmod file="${dist.home}/test_math.sh" perm="ugo+rx"/>
   </target>
 
   <target name="dist" depends="jar">
