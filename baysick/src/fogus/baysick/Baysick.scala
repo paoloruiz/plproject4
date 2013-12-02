@@ -108,6 +108,7 @@ package fogus.baysick {
 
     val lines = new HashMap[Int, BasicLine]
     val binds = new Bindings[String, Int]
+    val floatBinds = new Bindings[String, FLoat]
     val returnStack = new Stack[Int]
 
     /**
@@ -117,13 +118,13 @@ package fogus.baysick {
      */
     case class Assignment(sym:Symbol) {
       def :=(v:String):Function0[Unit] = (() => binds.set(sym, v))
-      def :=(v:Float):Function0[Unit] = (() => binds.set(sym, v))
+      def :=(v:Float):Function0[Unit] = (() => floatBinds.set(sym, v))
       def :=(v:Double):Function0[Unit] = (() => binds.set(sym, v))
       def :=(v:Int):Function0[Unit] = (() => binds.set(sym, v))
       def :=(v:List[Int]):Function0[Unit] = (() => binds.set(sym, v))
       def :=(v:Function0[Int]):Function0[Unit] = (() => binds.set(sym, v()))
       def :=[X: ClassManifest](v:Function0[List[Int]]):Function0[Unit] = (() => binds.set(sym, v()))
-      def :=[X: ClassManifest, Y: ClassManifest](v:Function0[Float]):Function0[Unit] = (() => binds.set(sym, v()))
+      def :=[X: ClassManifest, Y: ClassManifest](v:Function0[Float]):Function0[Unit] = (() => floatBinds.set(sym, v()))
     }
 
     /**
@@ -146,9 +147,9 @@ package fogus.baysick {
       def *[X: ClassManifest](rhs:Function0[Float]):Function0[Float] = (() => lhs() * rhs())
       def /[X: ClassManifest](rhs:Float):Function0[Float] = (() => lhs() / rhs)
       def /[X: ClassManifest](rhs:Function0[Float]):Function0[Float] = (() => lhs() / rhs())
-      def +[X: ClassManifest](rhs:Symbol):Function0[Float] = (() => lhs() + binds.num(rhs))
+      def +[X: ClassManifest](rhs:Symbol):Function0[Float] = (() => lhs() + floatBinds.num(rhs))
       def +[X: ClassManifest](rhs:Function0[Float]):Function0[Float] = (() => lhs() + rhs())
-      def -[X: ClassManifest](rhs:Symbol):Function0[Float] = (() => lhs() - binds.num(rhs))
+      def -[X: ClassManifest](rhs:Symbol):Function0[Float] = (() => lhs() - floatBinds.num(rhs))
       def -[X: ClassManifest](rhs:Function0[Float]):Function0[Float] = (() => lhs() - rhs())
 
       // Math for Doubles
@@ -504,6 +505,7 @@ package fogus.baysick {
     implicit def symbol2BinaryRelation(sym:Symbol) = BinaryRelation(() => binds.num(sym))
     implicit def fnOfInt2BinaryRelation(fn:Function0[Int]) = BinaryRelation(fn)
     implicit def symbol2MathFunction(sym:Symbol) = MathFunction(() => binds.num(sym))
+    implicit def symbol2MathFloatFunction(sym:Symbol) = MathFunction(() => floatBinds.num(sym))
     implicit def fnOfInt2MathFunction(fn:Function0[Int]) = MathFunction(fn)
   }
 }
