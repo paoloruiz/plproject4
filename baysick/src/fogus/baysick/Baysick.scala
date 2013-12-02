@@ -42,6 +42,7 @@ package fogus.baysick {
     abstract sealed class BasicLine
     case class PrintString(num: Int, s: String) extends BasicLine
     case class PrintResult(num:Int, fn:Function0[String]) extends BasicLine
+    case class PrintFunctionResult(num:Int, fn:Function0[Int]) extends BasicLine
     case class PrintVariable(num: Int, s: Symbol) extends BasicLine
     case class PrintNumber(num: Int, number: BigInt) extends BasicLine
     case class Goto(num: Int, to: Int) extends BasicLine
@@ -59,7 +60,7 @@ package fogus.baysick {
     case class For(num: Int, v: Symbol, sym:Symbol) extends BasicLine
     case class EndFor(num: Int) extends BasicLine 
     case class End(num: Int) extends BasicLine
-
+    case class Set(num:Int, sym:Symbol, ind:Int, value:Int) extends BasicLine
     /**
      * Bindings holds the two types of values provided, atoms and numerics.
      * It takes a type parameter on initialization corresponding to the
@@ -263,6 +264,8 @@ package fogus.baysick {
     def RANGE(s:Int,e:Symbol):Function0[List[Int]] = (() => List.range(s.intValue, binds.num(e).intValue))
     def RANGE(s:Symbol,e:Symbol):Function0[List[Int]] = (() => List.range(binds.num(s).intValue, binds.num(e).intValue))
     
+    def GET(s:Symbol, ind:Int):Function0[Int] = (() => castList(binds.num(s))(ind))
+
     def RUN() = gotoLine(lines.keys.toList.sortWith((l,r) => l < r).head)
 
     /**
@@ -284,10 +287,15 @@ package fogus.baysick {
         def apply(number: BigInt) = lines(num) = PrintNumber(num, number)
         def apply(s: Symbol) = lines(num) = PrintVariable(num, s)
         def apply(fn:Function0[String]) = lines(num) = PrintResult(num, fn)
+        def apply[X: ClassManifest](fn:Function0[Int]) = lines(num) = PrintFunctionResult(num, fn)
       }
 
       object INPUT {
         def apply(name: Symbol) = lines(num) = Input(num, name)
+      }
+
+      object SET {
+        def apply(sym:Symbol, ind:Int, value:Int) = lines(num) = Set(num, sym, ind, value)
       }
 
       object LET {
@@ -417,6 +425,10 @@ package fogus.baysick {
           println(fn())
           gotoLine(line + 10)
         }
+        case PrintFunctionResult(_, fn:Function0[Int]) => {
+          println(fn())
+          gotoLine(line + 10)
+        }
         case PrintVariable(_, s:Symbol) => {
           println(binds.any(s))
           gotoLine(line + 10)
@@ -432,6 +444,10 @@ package fogus.baysick {
             case _ => binds.set(name, entry)
           }
 
+          gotoLine(line + 10)
+        }
+        case Set(_, sym:Symbol, ind:Int, value:Int) => {
+          binds.set(sym, castList(binds.num(sym)).updated(ind, value))
           gotoLine(line + 10)
         }
         case Let(_, fn:Function0[Unit]) => {
@@ -519,7 +535,7 @@ package fogus.baysick {
     implicit def symbol2BinaryRelation(sym:Symbol) = BinaryRelation(() => binds.num(sym))
     implicit def fnOfInt2BinaryRelation(fn:Function0[Int]) = BinaryRelation(fn)
     implicit def symbol2MathFunction(sym:Symbol) = MathFunction(() => binds.num(sym))
-    implicit def symbol2MathFloatFunction(sym:Symbol) = MathFunctionFloat(() => floatBinds.num(sym))
+    //implicit def symbol2MathFloatFunction(sym:Symbol) = MathFunctionFloat(() => floatBinds.num(sym))
     implicit def fnOfInt2MathFunction(fn:Function0[Int]) = MathFunction(fn)
   }
 }

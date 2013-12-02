@@ -21,6 +21,20 @@ object FloatTest extends Baysick {
   }
 }
 
+object AccessTest extends Baysick {
+  def main(args:Array[String]) = {
+    10 LIST ('a := RANGE(0,3))
+    20 PRINT 'a
+    30 SET('a, 0, 9)
+    40 PRINT 'a
+    50 PRINT GET('a,0)
+    60 PRINT GET('a,1)
+    70 END
+
+    RUN
+  }
+}
+
 object EndlessLoop extends Baysick {
   def main(args:Array[String]) = {
     10 PRINT "Fogus Rulez!"
