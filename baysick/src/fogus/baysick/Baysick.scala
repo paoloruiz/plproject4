@@ -123,6 +123,7 @@ package fogus.baysick {
       def :=(v:List[Int]):Function0[Unit] = (() => binds.set(sym, v))
       def :=(v:Function0[Int]):Function0[Unit] = (() => binds.set(sym, v()))
       def :=[X: ClassManifest](v:Function0[List[Int]]):Function0[Unit] = (() => binds.set(sym, v()))
+      def :=[X: ClassManifest, Y: ClassManifest](v:Function0[Float]):Function0[Unit] = (() => binds.set(sym, v()))
     }
 
     /**
@@ -135,10 +136,31 @@ package fogus.baysick {
       def *(rhs:Function0[Int]):Function0[Int] = (() => lhs() * rhs())
       def /(rhs:Int):Function0[Int] = (() => lhs() / rhs)
       def /(rhs:Function0[Int]):Function0[Int] = (() => lhs() / rhs())
-      def +(rhs:Symbol):Function0[Int] = (() => lhs() + binds.num(rhs))
+//      def +(rhs:Symbol):Function0[Int] = (() => lhs() + binds.num(rhs))
       def +(rhs:Function0[Int]):Function0[Int] = (() => lhs() + rhs())
-      def -(rhs:Symbol):Function0[Int] = (() => lhs() - binds.num(rhs))
+//      def -(rhs:Symbol):Function0[Int] = (() => lhs() - binds.num(rhs))
       def -(rhs:Function0[Int]):Function0[Int] = (() => lhs() - rhs())
+
+      // Math for Floats
+      def *[X: ClassManifest](rhs:Float):Function0[Float] = (() => lhs() * rhs)
+      def *[X: ClassManifest](rhs:Function0[Float]):Function0[Float] = (() => lhs() * rhs())
+      def /[X: ClassManifest](rhs:Float):Function0[Float] = (() => lhs() / rhs)
+      def /[X: ClassManifest](rhs:Function0[Float]):Function0[Float] = (() => lhs() / rhs())
+      def +[X: ClassManifest](rhs:Symbol):Function0[Float] = (() => lhs() + binds.num(rhs))
+      def +[X: ClassManifest](rhs:Function0[Float]):Function0[Float] = (() => lhs() + rhs())
+      def -[X: ClassManifest](rhs:Symbol):Function0[Float] = (() => lhs() - binds.num(rhs))
+      def -[X: ClassManifest](rhs:Function0[Float]):Function0[Float] = (() => lhs() - rhs())
+
+      // Math for Doubles
+/*      def *[X: ClassManifest](rhs:Double):Function0[Double] = (() => lhs() * rhs)
+      def *[X: ClassManifest](rhs:Function0[Double]):Function0[Double] = (() => lhs() * rhs())
+      def /[X: ClassManifest](rhs:Double):Function0[Double] = (() => lhs() / rhs)
+      def /[X: ClassManifest](rhs:Function0[Double]):Function0[Double] = (() => lhs() / rhs())
+      def +[X: ClassManifest](rhs:Symbol):Function0[Double] = (() => lhs() + binds.num(rhs))
+      def +[X: ClassManifest](rhs:Function0[Double]):Function0[Double] = (() => lhs() + rhs())
+      def -[X: ClassManifest](rhs:Symbol):Function0[Double] = (() => lhs() - binds.num(rhs))
+      def -[X: ClassManifest](rhs:Function0[Double]):Function0[Double] = (() => lhs() - rhs())
+*/
     }
 
     /**
