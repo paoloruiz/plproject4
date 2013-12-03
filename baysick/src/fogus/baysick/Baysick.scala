@@ -358,11 +358,11 @@ package fogus.baysick {
       }
 
       object FUNCTION {
-        def apply(v:Symbol) = Function(num, v)
+        def apply(v:Symbol) = lines(num) =  Function(num, v)
       }
 
       object FUNCCALL {
-        def apply(v:Symbol) = FunctionCall(num, v)
+        def apply(v:Symbol) = lines(num) =  FunctionCall(num, v)
       }
 
       object RETURN {

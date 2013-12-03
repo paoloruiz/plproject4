@@ -38,13 +38,14 @@ object SortReverseTest extends Baysick {
 object FunctionTest extends Baysick {
   def main(args:Array[String]) = {
     10 FUNCTION 'm
-    20 FLOAT ('a := 1.234)
+    20 INT ('a := 1)
     30 PRINT 'a
     40 ENDFUNC
 
-    50 FUNCCALL 'm
-    60 PRINT "Done with function"
-    70 END
+    50 PRINT "This should print before"
+    60 FUNCCALL 'm
+    70 PRINT "Done with function"
+    80 END
 
     RUN
   }
