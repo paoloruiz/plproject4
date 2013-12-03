@@ -61,6 +61,8 @@ package fogus.baysick {
     case class EndFor(num: Int) extends BasicLine 
     case class End(num: Int) extends BasicLine
     case class Set(num:Int, sym:Symbol, ind:Int, value:Int) extends BasicLine
+    case class Reverse(num:Int, sym:Symbol) extends BasicLine
+    case class Sort(num:Int, sym:Symbol) extends BasicLine
     /**
      * Bindings holds the two types of values provided, atoms and numerics.
      * It takes a type parameter on initialization corresponding to the
@@ -298,6 +300,14 @@ package fogus.baysick {
         def apply(sym:Symbol, ind:Int, value:Int) = lines(num) = Set(num, sym, ind, value)
       }
 
+      object SORT {
+        def apply(sym:Symbol) = lines(num) = Sort(num, sym)
+      }
+
+      object REVERSE {
+        def apply(sym:Symbol) = lines(num) = Reverse(num, sym)
+      }
+
       object LET {
         def apply(fn:Function0[Unit]) = lines(num) = Let(num, fn)
       }
@@ -448,6 +458,14 @@ package fogus.baysick {
         }
         case Set(_, sym:Symbol, ind:Int, value:Int) => {
           binds.set(sym, castList(binds.num(sym)).updated(ind, value))
+          gotoLine(line + 10)
+        }
+        case Sort(_, sym:Symbol) => {
+          binds.set(sym, castList(binds.num(sym)).sorted)
+          gotoLine(line + 10)
+        }
+        case Reverse(_, sym:Symbol) => {
+          binds.set(sym, castList(binds.num(sym)).reverse)
           gotoLine(line + 10)
         }
         case Let(_, fn:Function0[Unit]) => {
