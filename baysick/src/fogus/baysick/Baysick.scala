@@ -63,6 +63,13 @@ package fogus.baysick {
     case class Set(num:Int, sym:Symbol, ind:Int, value:Int) extends BasicLine
     case class Reverse(num:Int, sym:Symbol) extends BasicLine
     case class Sort(num:Int, sym:Symbol) extends BasicLine
+    case class Function(num: Int, v: Symbol) extends BasicLine
+    case class EndFunction(num: Int) extends BasicLine 
+    case class FunctionCall(num: Int, v: Symbol) extends BasicLine
+    case class Return(num: Int, v: Symbol) extends BasicLine
+    case class Push(num: Int, v: Symbol) extends BasicLine
+    case class Pop(num: Int, v: Symbol) extends BasicLine
+    case class PopRet(num: Int, v: Symbol) extends BasicLine
     /**
      * Bindings holds the two types of values provided, atoms and numerics.
      * It takes a type parameter on initialization corresponding to the
@@ -113,6 +120,11 @@ package fogus.baysick {
     val binds = new Bindings[String, Int]
     val floatBinds = new Bindings[String, Float]
     val returnStack = new Stack[Int]
+
+    val functions = new HashMap[Symbol, Int]
+    val inputVars = new Stack[Any]
+    val lastPlace = new Stack[Int]
+    val retValStack = new Stack[Any]
 
     /**
      * The Assignment class is used by the `symbol2Assignment` implicit to
@@ -283,6 +295,7 @@ package fogus.baysick {
     case class LineBuilder(num: Int) {
       def ENDWHILE() = lines(num) = EndWhile(num)
       def ENDFOR() = lines(num) = EndFor(num)
+      def ENDFUNC() = lines(num) = EndFunction(num)
       def END() = lines(num) = End(num)
       object PRINT {
         def apply(str:String) = lines(num) = PrintString(num, str)
@@ -343,7 +356,31 @@ package fogus.baysick {
       object FOR {
         def apply(v:Symbol) = ForLoop(num, v) 
       }
-     
+
+      object FUNCTION {
+        def apply(v:Symbol) = Function(num, v)
+      }
+
+      object FUNCCALL {
+        def apply(v:Symbol) = FunctionCall(num, v)
+      }
+
+      object RETURN {
+        def apply(v:Symbol) = Return(num, v)
+      }
+
+      object PUSH {
+        def apply(v:Symbol) = Push(num, v)
+      }
+
+      object POP {
+        def apply(v:Symbol) = Pop(num, v)
+      }
+
+      object POPRET {
+        def apply(v:Symbol) = PopRet(num, v)
+      }
+
       object LIST {
         def apply(fn:Function0[Unit]) = lines(num) = ListAssig(num, fn)
       }
@@ -412,6 +449,18 @@ package fogus.baysick {
         }
         case _ => {
           whileLoopStart(line - 10, stackSize)
+        }
+      }
+    }
+
+    private def functionStart(line: Int) {
+      lines(line) match {
+        case EndFunction(_) => {
+          gotoLine(line+10)
+          return
+        }
+        case _ => {
+          functionStart(line+10)
         }
       }
     }
@@ -538,6 +587,34 @@ package fogus.baysick {
         }
         case EndFor(_) => {
           return
+        }
+        case Function(_, v:Symbol) => {
+          functions.put(v, line+10)
+          functionStart(line+10)
+        }
+        case EndFunction(_) => {
+          val nextLine = lastPlace.pop()
+          gotoLine(nextLine)
+        }
+        case FunctionCall(_, v:Symbol) => {
+          lastPlace.push(line+10)
+          val nextLineOpt: Option[Int] = functions.get(v)
+          val nextLine: Int = nextLineOpt.get
+          gotoLine(nextLine)
+        }
+        case Return(_, v:Symbol) => {
+          retValStack.push(binds.any(v))
+          gotoLine(line+10)
+        }
+        case Push(_, v:Symbol) => {
+          inputVars.push(binds.any(v))
+          gotoLine(line+10)
+        }
+        case Pop(_, v:Symbol) => {
+          binds.set(v, inputVars.pop())
+        }
+        case PopRet(_, v:Symbol) => {
+          binds.set(v, retValStack.pop())
         }
         case Goto(_, to) => gotoLine(to)
         case End(_) => {

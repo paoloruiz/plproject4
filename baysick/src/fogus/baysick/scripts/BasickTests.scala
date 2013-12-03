@@ -35,6 +35,21 @@ object SortReverseTest extends Baysick {
   }
 }
 
+object FunctionTest extends Baysick {
+  def main(args:Array[String]) = {
+    10 FUNCTION 'm
+    20 FLOAT ('a := 1.234)
+    30 PRINT 'a
+    40 ENDFUNC
+
+    50 FUNCCALL 'm
+    60 PRINT "Done with function"
+    70 END
+
+    RUN
+  }
+}
+
 object AccessTest extends Baysick {
   def main(args:Array[String]) = {
     10 LIST ('a := RANGE(0,3))

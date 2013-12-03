@@ -12,3 +12,4 @@ java -cp $SCALA_HOME/lib/scala-library.jar:baysick.jar RangeTest
 java -cp $SCALA_HOME/lib/scala-library.jar:baysick.jar LoopTest
 java -cp $SCALA_HOME/lib/scala-library.jar:baysick.jar AccessTest
 java -cp $SCALA_HOME/lib/scala-library.jar:baysick.jar SortReverseTest
+java -cp $SCALA_HOME/lib/scala-library.jar:baysick.jar FunctionTest
