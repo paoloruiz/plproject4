@@ -13,3 +13,4 @@ java -cp $SCALA_HOME/lib/scala-library.jar:mep.jar LoopTest
 java -cp $SCALA_HOME/lib/scala-library.jar:mep.jar AccessTest
 java -cp $SCALA_HOME/lib/scala-library.jar:mep.jar SortReverseTest
 java -cp $SCALA_HOME/lib/scala-library.jar:mep.jar FunctionTest
+java -cp $SCALA_HOME/lib/scala-library.jar:mep.jar FunctionReturnTest

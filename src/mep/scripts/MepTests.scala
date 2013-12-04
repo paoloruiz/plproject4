@@ -51,6 +51,24 @@ object FunctionTest extends Mep {
   }
 }
 
+object FunctionReturnTest extends Mep {
+  def main(args:Array[String]) = {
+    10 FUNCTION 'm
+    20 INT ('a := 1)
+    30 RETURN 'a
+    40 ENDFUNC
+
+    50 PRINT "This should print before"
+    60 FUNCCALL 'm
+    70 POPRET 'b
+    80 PRINT 'b
+    90 PRINT "Should be a 1 up there"
+    100 END
+
+    RUN
+  }
+}
+
 object AccessTest extends Mep {
   def main(args:Array[String]) = {
     10 LIST ('a := RANGE(0,3))
