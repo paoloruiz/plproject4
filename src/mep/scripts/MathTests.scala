@@ -1,4 +1,4 @@
-import fogus.baysick.Baysick
+import mep.Mep
 
 /**
  * Tests the ability to run everyone's first BASIC program; the endless loop
@@ -11,7 +11,7 @@ import fogus.baysick.Baysick
  * </code>
  *
  **/
-object FloatBasicMathTest extends Baysick {
+object FloatBasicMathTest extends Mep {
   def main(args:Array[String]) = {
     10 FLOAT ('a := 1.256f)
     20 FLOAT ('b := 4.6432f)
@@ -23,7 +23,7 @@ object FloatBasicMathTest extends Baysick {
   }
 }
 
-object FloatMathTest extends Baysick {
+object FloatMathTest extends Mep {
   def main(args:Array[String]) = {
     10 FLOAT ('a := 1.253567f)
     20 FLOAT ('b := 3.5678f)

@@ -1,15 +1,15 @@
-<project name="Baysick" default="dist" basedir=".">
+<project name="Mep" default="dist" basedir=".">
   <property environment="env"/>
 
-  <property name="package.name"   value = "fogus.baysick"/>
-  <property name="module.name"    value = "baysick"/>
+  <property name="package.name"   value = "mep"/>
+  <property name="module.name"    value = "mep"/>
 
   <property name="dist.home"      value="${basedir}/dist"/>
   <property name="src.home"       value="${basedir}/src"/>
   <property name="javadoc.home"   value="${basedir}/doc/apidoc"/>
   <property name="classes.home"   value="${basedir}/classes"/>
   <property name="archive.home"   value="${dist.home}"/>
-  <property name="archive.name"   value="baysick.jar"/>
+  <property name="archive.name"   value="mep.jar"/>
 
   <description>
     Ant build script for compiling Jaka.
@@ -77,17 +77,17 @@
     <mkdir dir="${dist.home}"/>
 
     <copy todir="${dist.home}" includeEmptyDirs="false" preservelastmodified="yes" overwrite="yes" flatten="false">
-      <fileset dir="${src.home}" includes="baysick"/>
+      <fileset dir="${src.home}" includes="mep"/>
     </copy>
 
-    <chmod file="${dist.home}/baysick" perm="ugo+rx"/>
+    <chmod file="${dist.home}/mep" perm="ugo+rx"/>
   </target>
 
   <target name="jar" depends="compile">
     <jar destfile="${archive.home}/${archive.name}" basedir="${classes.home}">
       <manifest>
-        <attribute name="Author" value="Fogus"/>
-        <attribute name="Main-Class" value="fogus.baysick.Repl"/>
+        <attribute name="Author" value="Mep"/>
+        <attribute name="Main-Class" value="mep.Repl"/>
       </manifest>
     </jar>
   </target>
@@ -99,7 +99,7 @@
       </classpath>
     </taskdef>
 
-    <scalac srcdir="src/fogus"
+    <scalac srcdir="src/mep"
             destdir="${classes.home}"
             target="jvm-1.5"
             force="changed"
