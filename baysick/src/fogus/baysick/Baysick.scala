@@ -366,19 +366,19 @@ package fogus.baysick {
       }
 
       object RETURN {
-        def apply(v:Symbol) = Return(num, v)
+        def apply(v:Symbol) = lines(num) = Return(num, v)
       }
 
       object PUSH {
-        def apply(v:Symbol) = Push(num, v)
+        def apply(v:Symbol) = lines(num) = Push(num, v)
       }
 
       object POP {
-        def apply(v:Symbol) = Pop(num, v)
+        def apply(v:Symbol) = lines(num) = Pop(num, v)
       }
 
       object POPRET {
-        def apply(v:Symbol) = PopRet(num, v)
+        def apply(v:Symbol) = lines(num) = PopRet(num, v)
       }
 
       object LIST {
@@ -612,9 +612,11 @@ package fogus.baysick {
         }
         case Pop(_, v:Symbol) => {
           binds.set(v, inputVars.pop())
+          gotoLine(line+10)
         }
         case PopRet(_, v:Symbol) => {
           binds.set(v, retValStack.pop())
+          gotoLine(line+10)
         }
         case Goto(_, to) => gotoLine(to)
         case End(_) => {
