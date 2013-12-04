@@ -66,20 +66,39 @@ object AccessClassTest extends Mep {
 object NestedWhileLoopTest extends Mep {
   def main(args:Array[String]) = {
     10 PRINT "Nested While loop test"
-    20 INT ('a := 0)
-    30 INT ('b := 1)
-    40 WHILE 'a <= 5
-    50 PRINT "Printng 6 times"
-    60 INT ('c := 0)
-    70 WHILE 'c <= 1
-    80 PRINT "Printing twice 6 times"
-    90 INT ('c := 'c + 'b)
-    100 ENDWHILE
+    20 INPUT 'z
+    30 INT ('a := 0)
+    40 INT ('b := 1)
+    50 WHILE 'a <= 5
+    60 PRINT "Printng 6 times"
+    70 INT ('c := 0)
+    80 WHILE 'c <= 1
+    90 PRINT "Printing twice 6 times"
+    100 INT ('c := 'c + 'b)
+    110 ENDWHILE
 
-    110 INT ('a := 'a + 'b)
-    120 ENDWHILE
+    120 INT ('a := 'a + 'b)
+    130 ENDWHILE
 
-    130 END
+    140 END
+
+    RUN
+  }
+}
+
+object ExplicitTypeTest extends Mep {
+  def main(args:Array[String]) = {
+    10 PRINT "Explicit type test"
+    20 INPUT 'z
+    30 INT ('int := 42)
+    40 PRINT 'int
+    50 FLOAT ('float := 23.5)
+    60 PRINT 'float
+    70 LIST ('list := List(7,4,9))
+    80 PRINT 'list
+    90 STRING ('string := "String")
+    100 PRINT 'string
+    110 END
 
     RUN
   }
