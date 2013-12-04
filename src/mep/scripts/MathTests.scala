@@ -15,8 +15,20 @@ object FloatBasicMathTest extends Mep {
   def main(args:Array[String]) = {
     10 FLOAT ('a := 1.256f)
     20 FLOAT ('b := 4.6432f)
-    30 FLOAT ('c := 'a + 'b)
-    40 PRINT 'c
+    30 LET ('c := 'a + 'a)
+    40 PRINT 'b
+    50 END
+
+    RUN
+  }
+}
+
+object IntBasicMathTest extends Mep {
+  def main(args:Array[String]) = {
+    10 INT ('a := 1)
+    20 INT ('b := 4)
+    30 INT ('c := 'a + 'a)
+    40 PRINT 'b
     50 END
 
     RUN
@@ -30,11 +42,6 @@ object FloatMathTest extends Mep {
     30 PRINT 'a
     40 PRINT "Hello"
     50 END
-    /*40 LET ('c := 'a + 'b)
-    50 PRINT 'c
-    60 LET ('c := 'b - 'a)
-    70 PRINT 'c
-    80 END*/
 
     RUN
   }
