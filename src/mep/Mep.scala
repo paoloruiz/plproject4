@@ -147,50 +147,27 @@ package mep {
      * `fnOfInt2MathFunction` implicits to stand in for Scala symbols and
      * functions of type () => Int, the latter being constructed at run-time.
      */
-    case class MathFunction(lhs:Function0[Any]) {
-      var lhs2:Function0[Int] = lhs match {
-        case x:Function0[Int] => x
-        case _ => {
-          () => 0
-        }
-      }
-      var lhs3:Function0[Float] = (() => 0)
-      if (lhs2 == (() => 0)) {
-        var lhs3:Function0[Float] = lhs match {
-          case x:Function0[Float] => x
-          case _ => {
-          (() => 0)
-          }
-        }
-      }
-      if (lhs3 == (() => 0)){
-        IntFunc(lhs2) 
-      }// Math for Floats
-      else {
-        FloatFunc(lhs3)
-      }
-   case class IntFunc(lhs2:Function0[Int]) {
+    case class MathFunction(lhs:Function0[Int]) {
+      def *(rhs:Int):Function0[Int] = (() => lhs() * rhs)
+      def *(rhs:Function0[Int]):Function0[Int] = (() => lhs() * rhs())
+      def /(rhs:Int):Function0[Int] = (() => lhs() / rhs)
+      def /(rhs:Function0[Int]):Function0[Int] = (() => lhs() / rhs())
+      def +(rhs:Symbol):Function0[Int] = (() => lhs() + binds.num(rhs))
+      def +(rhs:Function0[Int]):Function0[Int] = (() => lhs() + rhs())
+      def -(rhs:Symbol):Function0[Int] = (() => lhs() - binds.num(rhs))
+      def -(rhs:Function0[Int]):Function0[Int] = (() => lhs() - rhs())
 
-      def *(rhs:Int):Function0[Int] = (() => lhs2() * rhs)
-      def *(rhs:Function0[Int]):Function0[Int] = (() => lhs2() * rhs())
-      def /(rhs:Int):Function0[Int] = (() => lhs2() / rhs)
-      def /(rhs:Function0[Int]):Function0[Int] = (() => lhs2() / rhs())
-      def +(rhs:Symbol):Function0[Int] = (() => lhs2() + binds.num(rhs))
-      def +(rhs:Function0[Int]):Function0[Int] = (() => lhs2() + rhs())
-      def -(rhs:Symbol):Function0[Int] = (() => lhs2() - binds.num(rhs))
-      def -(rhs:Function0[Int]):Function0[Int] = (() => lhs2() - rhs())
-      }// Math for Doubles
-    case class FloatFunc(lhs3:Function0[Float]) {
-
-      def *[X: ClassManifest](rhs:Float):Function0[Float] = (() => lhs3() * rhs)
-      def *[X: ClassManifest](rhs:Function0[Float]):Function0[Float] = (() => lhs3() * rhs())
-      def /[X: ClassManifest](rhs:Float):Function0[Float] = (() => lhs3() / rhs)
-      def /[X: ClassManifest](rhs:Function0[Float]):Function0[Float] = (() => lhs3() / rhs())
-      def +[X: ClassManifest](rhs:Symbol):Function0[Float] = (() => lhs3() + floatBinds.num(rhs))
-      def +[X: ClassManifest](rhs:Function0[Float]):Function0[Float] = (() => lhs3() + rhs())
-      def -[X: ClassManifest](rhs:Symbol):Function0[Float] = (() => lhs3() - floatBinds.num(rhs))
-      def -[X: ClassManifest](rhs:Function0[Float]):Function0[Float] = (() => lhs3() - rhs())
-    }
+      // Math for Floats
+/*      def *[X: ClassManifest](rhs:Float):Function0[Float] = (() => lhs() * rhs)
+      def *[X: ClassManifest](rhs:Function0[Float]):Function0[Float] = (() => lhs() * rhs())
+      def /[X: ClassManifest](rhs:Float):Function0[Float] = (() => lhs() / rhs)
+      def /[X: ClassManifest](rhs:Function0[Float]):Function0[Float] = (() => lhs() / rhs())
+      def +[X: ClassManifest](rhs:Symbol):Function0[Float] = (() => lhs() + floatBinds.num(rhs))
+      def +[X: ClassManifest](rhs:Function0[Float]):Function0[Float] = (() => lhs() + rhs())
+      def -[X: ClassManifest](rhs:Symbol):Function0[Float] = (() => lhs() - floatBinds.num(rhs))
+      def -[X: ClassManifest](rhs:Function0[Float]):Function0[Float] = (() => lhs() - rhs())
+*/
+      // Math for Doubles
 /*      def *[X: ClassManifest](rhs:Double):Function0[Double] = (() => lhs() * rhs)
       def *[X: ClassManifest](rhs:Function0[Double]):Function0[Double] = (() => lhs() * rhs())
       def /[X: ClassManifest](rhs:Double):Function0[Double] = (() => lhs() / rhs)
@@ -654,8 +631,8 @@ package mep {
     implicit def symbol2Assignment(sym:Symbol) = Assignment(sym)
     implicit def symbol2BinaryRelation(sym:Symbol) = BinaryRelation(() => binds.num(sym))
     implicit def fnOfInt2BinaryRelation(fn:Function0[Int]) = BinaryRelation(fn)
-    implicit def symbol2MathFunction(sym:Symbol) = MathFunction(() => binds.any(sym))
+    implicit def symbol2MathFunction(sym:Symbol) = MathFunction(() => binds.num(sym))
     //implicit def symbol2MathFloatFunction(sym:Symbol) = MathFunctionFloat(() => floatBinds.num(sym))
-    implicit def fnOfInt2MathFunction(fn:Function0[Any]) = MathFunction(fn)
+    implicit def fnOfInt2MathFunction(fn:Function0[Int]) = MathFunction(fn)
   }
 }
