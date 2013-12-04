@@ -530,7 +530,7 @@ package mep {
           fn()
           gotoLine(line + 10)
         }
-        case LetDouble(_, fn:Function0[String]) => {
+        case LetDouble(_, fn:Function0[Double]) => {
           fn()
           gotoLine(line + 10)
         }
