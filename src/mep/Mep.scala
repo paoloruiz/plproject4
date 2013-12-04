@@ -1,4 +1,4 @@
-package fogus.baysick {
+package mep {
   import scala.collection.mutable.HashMap
   import scala.collection.mutable.Stack
 
@@ -38,7 +38,7 @@ package fogus.baysick {
    * Thanks to Szymon Jachim for the motivation to do this.
    *
    */
-  class Baysick {
+  class Mep {
     abstract sealed class BasicLine
     case class PrintString(num: Int, s: String) extends BasicLine
     case class PrintResult(num:Int, fn:Function0[String]) extends BasicLine

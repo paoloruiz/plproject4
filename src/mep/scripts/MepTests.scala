@@ -1,4 +1,4 @@
-import fogus.baysick.Baysick
+import mep.Mep
 
 /**
  * Tests the ability to run everyone's first BASIC program; the endless loop
@@ -11,7 +11,7 @@ import fogus.baysick.Baysick
  * </code>
  *
  **/
-object FloatTest extends Baysick {
+object FloatTest extends Mep {
   def main(args:Array[String]) = {
     10 FLOAT ('a := 1.253567)
     20 PRINT 'a
@@ -21,7 +21,7 @@ object FloatTest extends Baysick {
   }
 }
 
-object SortReverseTest extends Baysick {
+object SortReverseTest extends Mep {
   def main(args:Array[String]) = {
     10 LIST ('a := List(5,3,9))
     20 PRINT 'a
@@ -35,7 +35,7 @@ object SortReverseTest extends Baysick {
   }
 }
 
-object FunctionTest extends Baysick {
+object FunctionTest extends Mep {
   def main(args:Array[String]) = {
     10 FUNCTION 'm
     20 INT ('a := 1)
@@ -51,7 +51,7 @@ object FunctionTest extends Baysick {
   }
 }
 
-object AccessTest extends Baysick {
+object AccessTest extends Mep {
   def main(args:Array[String]) = {
     10 LIST ('a := RANGE(0,3))
     20 PRINT 'a
@@ -65,7 +65,7 @@ object AccessTest extends Baysick {
   }
 }
 
-object EndlessLoop extends Baysick {
+object EndlessLoop extends Mep {
   def main(args:Array[String]) = {
     10 PRINT "Fogus Rulez!"
     20 GOTO 10
@@ -75,7 +75,7 @@ object EndlessLoop extends Baysick {
   }
 }
 
-object RangeTest extends Baysick {
+object RangeTest extends Mep {
   def main(args:Array[String]) = {
     10 PRINT "Range Test"
     20 LIST ('a := RANGE(0, 3))
@@ -86,7 +86,7 @@ object RangeTest extends Baysick {
   }
 }
 
-object LoopTest extends Baysick {
+object LoopTest extends Mep {
   def main(args:Array[String]) = {
     10 PRINT "Loop Test"
     20 LIST ('a := RANGE(0, 3))
@@ -105,7 +105,7 @@ object LoopTest extends Baysick {
   }
 }
 
-object ListTest extends Baysick {
+object ListTest extends Mep {
   def main(args:Array[String]) = {
     10 PRINT "List test"
     20 LIST ('a := List(0, 1, 2))
@@ -117,7 +117,7 @@ object ListTest extends Baysick {
   }
 }
 
-object HelloWorld extends Baysick {
+object HelloWorld extends Mep {
   def main(args:Array[String]) = {
     10 INT ('a := 0)
     20 INT ('b := 1)
@@ -138,7 +138,7 @@ object HelloWorld extends Baysick {
   }
 }
 
-object HelloNumbers extends Baysick {
+object HelloNumbers extends Mep {
   def main(args:Array[String]) = {
     10 PRINT "Here are some numbers:"
     20 PRINT 42
@@ -158,7 +158,7 @@ object HelloNumbers extends Baysick {
   }
 }
 
-object HelloName extends Baysick {
+object HelloName extends Mep {
   def main(args:Array[String]) = {
     10 PRINT "What is your name: "
     20 INPUT 'a
@@ -169,7 +169,7 @@ object HelloName extends Baysick {
   }
 }
 
-object HelloPrint extends Baysick {
+object HelloPrint extends Mep {
   def main(args:Array[String]) = {
     10 STRING ('a := "World")
     20 PRINT "Hello " % 'a
@@ -188,7 +188,7 @@ object HelloPrint extends Baysick {
   }
 }
 
-object HelloLet extends Baysick {
+object HelloLet extends Mep {
   def main(args:Array[String]) = {
     10 STRING ('a := "Hello Let!")  // weird, LET requires parens
     20 PRINT 'a
@@ -200,7 +200,7 @@ object HelloLet extends Baysick {
   }
 }
 
-object HelloIf extends Baysick {
+object HelloIf extends Mep {
   def main(args:Array[String]) = {
     10 INT ('a := 5)
     20 IF 'a === 5 THEN 40
@@ -215,7 +215,7 @@ object HelloIf extends Baysick {
   }
 }
 
-object SquareRoot extends Baysick {
+object SquareRoot extends Mep {
   def main(args:Array[String]) = {
     10 PRINT "Enter a number"
     20 INPUT 'n
@@ -226,9 +226,9 @@ object SquareRoot extends Baysick {
   }
 }
 
-object Lunar extends Baysick {
+object Lunar extends Mep {
   def main(args:Array[String]) = {
-    10 PRINT "Welcome to Baysick Lunar Lander v0.0.1"
+    10 PRINT "Welcome to Mep Lunar Lander v0.0.1"
     20 INT ('dist := 100)
     30 INT ('v := 1)
     40 INT ('fuel := 1000)
