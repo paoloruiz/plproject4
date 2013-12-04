@@ -136,6 +136,7 @@ package mep {
       def :=(v:Float):Function0[Unit] = (() => floatBinds.set(sym, v))
       def :=(v:Double):Function0[Unit] = (() => binds.set(sym, v))
       def :=(v:Int):Function0[Unit] = (() => binds.set(sym, v))
+      def :=(v:Symbol):Function0[Unit] = (() => binds.set(sym, binds.any(v)))
       def :=(v:List[Int]):Function0[Unit] = (() => binds.set(sym, v))
       def :=(v:Function0[Int]):Function0[Unit] = (() => binds.set(sym, v()))
       def :=[X: ClassManifest](v:Function0[List[Int]]):Function0[Unit] = (() => binds.set(sym, v()))
@@ -604,7 +605,7 @@ package mep {
         }
         case Return(_, v:Symbol) => {
           retValStack.push(binds.any(v))
-          gotoLine(line+10)
+          gotoLine(lastPlace.pop())
         }
         case Push(_, v:Symbol) => {
           inputVars.push(binds.any(v))
