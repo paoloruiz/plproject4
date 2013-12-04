@@ -1,8 +1,93 @@
 import mep.Mep
 
+object SortReverseClassTest extends Mep {
+  def main(args:Array[String]) = {
+    10 LIST ('a := List(3,1,2))
+    20 PRINT 'a
+    30 INPUT 'c
+    40 SORT 'a
+    50 PRINT 'a
+    60 INPUT 'b
+    70 REVERSE 'a
+    80 PRINT 'a
+    90 END
+
+    RUN
+  }
+}
+
+object LoopClassTest extends Mep {
+  def main(args:Array[String]) = {
+    10 PRINT "Loop Test"
+    20 LIST ('a := List(5,1,4))
+    30 PRINT 'a
+    40 INPUT 'z
+    50 PRINT "Printing elements of list"
+    60 INPUT 'z
+    70 FOR 'm IN 'a
+    80 PRINT 'm
+    90 ENDFOR
+
+    100 PRINT "Printing range from 18 to 23"
+    110 INPUT 'z
+    120 FOR 'n IN RANGE(18,24)
+    130 PRINT 'n
+    140 ENDFOR
+
+    150 END
+   
+    RUN
+  }
+}
+
+
+object AccessClassTest extends Mep {
+  def main(args:Array[String]) = {
+    10 PRINT "Access and Set List elements test"
+    20 INPUT 'z
+    30 LIST ('a := RANGE(0,3))
+    40 PRINT 'a
+    50 PRINT "Setting element 0 to be 9"
+    60 INPUT 'z
+    70 SET('a, 0, 9)
+    80 PRINT 'a
+    90 PRINT "Getting 0th element"
+    100 INPUT 'z
+    110 PRINT GET('a,0)
+    120 PRINT "Getting 1st element"
+    130 INPUT 'z
+    140 PRINT GET('a,1)
+    150 END
+
+    RUN
+  }
+}
+
+object NestedWhileLoopTest extends Mep {
+  def main(args:Array[String]) = {
+    10 PRINT "Nested While loop test"
+    20 INT ('a := 0)
+    30 INT ('b := 1)
+    40 WHILE 'a <= 5
+    50 PRINT "Printng 6 times"
+    60 INT ('c := 0)
+    70 WHILE 'c <= 1
+    80 PRINT "Printing twice 6 times"
+    90 INT ('c := 'c + 'b)
+    100 ENDWHILE
+
+    110 INT ('a := 'a + 'b)
+    120 ENDWHILE
+
+    130 END
+
+    RUN
+  }
+}
+
 object FibonacciTest extends Mep {
   def main(args:Array[String]) = {
-    10 PRINT "Enter a number"
+    10 PRINT "Fib: Enter a number"
     20 INPUT 'a
     30 INT ('b := 'a)
     40 INT ('f := 1)
