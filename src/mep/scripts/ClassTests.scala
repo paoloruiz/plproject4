@@ -2,15 +2,17 @@ import mep.Mep
 
 object SortReverseClassTest extends Mep {
   def main(args:Array[String]) = {
-    10 LIST ('a := List(3,1,2))
-    20 PRINT 'a
-    30 INPUT 'c
-    40 SORT 'a
-    50 PRINT 'a
-    60 INPUT 'b
-    70 REVERSE 'a
-    80 PRINT 'a
-    90 END
+    10 PRINT "Sort and Reverse Lists"
+    20 LIST ('a := List(3,1,2))
+    30 PRINT 'a
+    40 INPUT 'c
+    50 SORT 'a
+    60 PRINT 'a
+    70 INPUT 'b
+    80 REVERSE 'a
+    90 PRINT 'a
+    100 PRINT " "
+    110 END
 
     RUN
   }
@@ -34,7 +36,8 @@ object LoopClassTest extends Mep {
     130 PRINT 'n
     140 ENDFOR
 
-    150 END
+    150 PRINT " "
+    160 END
    
     RUN
   }

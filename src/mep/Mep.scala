@@ -157,40 +157,6 @@ package mep {
       def +(rhs:Function0[Int]):Function0[Int] = (() => lhs() + rhs())
       def -(rhs:Symbol):Function0[Int] = (() => lhs() - binds.num(rhs))
       def -(rhs:Function0[Int]):Function0[Int] = (() => lhs() - rhs())
-
-      // Math for Floats
-/*      def *[X: ClassManifest](rhs:Float):Function0[Float] = (() => lhs() * rhs)
-      def *[X: ClassManifest](rhs:Function0[Float]):Function0[Float] = (() => lhs() * rhs())
-      def /[X: ClassManifest](rhs:Float):Function0[Float] = (() => lhs() / rhs)
-      def /[X: ClassManifest](rhs:Function0[Float]):Function0[Float] = (() => lhs() / rhs())
-      def +[X: ClassManifest](rhs:Symbol):Function0[Float] = (() => lhs() + floatBinds.num(rhs))
-      def +[X: ClassManifest](rhs:Function0[Float]):Function0[Float] = (() => lhs() + rhs())
-      def -[X: ClassManifest](rhs:Symbol):Function0[Float] = (() => lhs() - floatBinds.num(rhs))
-      def -[X: ClassManifest](rhs:Function0[Float]):Function0[Float] = (() => lhs() - rhs())
-*/
-      // Math for Doubles
-/*      def *[X: ClassManifest](rhs:Double):Function0[Double] = (() => lhs() * rhs)
-      def *[X: ClassManifest](rhs:Function0[Double]):Function0[Double] = (() => lhs() * rhs())
-      def /[X: ClassManifest](rhs:Double):Function0[Double] = (() => lhs() / rhs)
-      def /[X: ClassManifest](rhs:Function0[Double]):Function0[Double] = (() => lhs() / rhs())
-      def +[X: ClassManifest](rhs:Symbol):Function0[Double] = (() => lhs() + binds.num(rhs))
-      def +[X: ClassManifest](rhs:Function0[Double]):Function0[Double] = (() => lhs() + rhs())
-      def -[X: ClassManifest](rhs:Symbol):Function0[Double] = (() => lhs() - binds.num(rhs))
-      def -[X: ClassManifest](rhs:Function0[Double]):Function0[Double] = (() => lhs() - rhs())
-*/
-    }
-
-
-    case class MathFunctionFloat(lhs:Function0[Float]) {
-      // Math for Floats
-      def *(rhs:Float):Function0[Float] = (() => lhs() * rhs)
-      def *(rhs:Function0[Float]):Function0[Float] = (() => lhs() * rhs())
-      def /(rhs:Float):Function0[Float] = (() => lhs() / rhs)
-      def /(rhs:Function0[Float]):Function0[Float] = (() => lhs() / rhs())
-      def +(rhs:Symbol):Function0[Float] = (() => lhs() + floatBinds.num(rhs))
-      def +(rhs:Function0[Float]):Function0[Float] = (() => lhs() + rhs())
-      def -(rhs:Symbol):Function0[Float] = (() => lhs() - floatBinds.num(rhs))
-      def -(rhs:Function0[Float]):Function0[Float] = (() => lhs() - rhs())
     }
 
 
@@ -633,7 +599,6 @@ package mep {
     implicit def symbol2BinaryRelation(sym:Symbol) = BinaryRelation(() => binds.num(sym))
     implicit def fnOfInt2BinaryRelation(fn:Function0[Int]) = BinaryRelation(fn)
     implicit def symbol2MathFunction(sym:Symbol) = MathFunction(() => binds.num(sym))
-    //implicit def symbol2MathFloatFunction(sym:Symbol) = MathFunctionFloat(() => floatBinds.num(sym))
     implicit def fnOfInt2MathFunction(fn:Function0[Int]) = MathFunction(fn)
   }
 }
